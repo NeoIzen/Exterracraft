@@ -1,0 +1,10 @@
+# Item localizations
+item.exterracraft:exterranium_ingot.name=Exterranium Ingot
+item.exterracraft:exterranium_dust.name=Exterranium Dust
+
+# Block localizations
+tile.exterracraft:exterranium_ore.name=Exterranium Ore
+tile.exterracraft:exterranium_block.name=Exterranium Block
+
+# Misc localizations
+itemGroup.exterracraft=Exterracraft

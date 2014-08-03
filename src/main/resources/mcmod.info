@@ -1,0 +1,21 @@
+[
+{
+  "modid": "exterracraft",
+  "name": "Exterracraft",
+  "description": "!",
+  "version": "${mod_version}",
+  "mcversion": "${minecraft_version}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [
+    "_izen_"
+  ],
+  "credits": "_izen_",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]
