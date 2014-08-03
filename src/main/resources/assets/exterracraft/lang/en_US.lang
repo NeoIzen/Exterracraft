@@ -5,6 +5,7 @@ item.exterracraft:exterranium_dust.name=Exterranium Dust
 # Block localizations
 tile.exterracraft:exterranium_ore.name=Exterranium Ore
 tile.exterracraft:exterranium_block.name=Exterranium Block
+tile.exterracraft:atomizer.name=Atomizer
 
 # Misc localizations
 itemGroup.exterracraft=Exterracraft

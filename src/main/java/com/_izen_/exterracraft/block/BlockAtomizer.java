@@ -6,5 +6,6 @@ public class BlockAtomizer extends BlockMachine
 	public BlockAtomizer()
 	{
 		super();
+		this.setBlockName("atomizer");
 	}
 }
