@@ -4,6 +4,7 @@ import com._izen_.exterracraft.block.BlockAtomizer;
 import com._izen_.exterracraft.block.BlockEC;
 import com._izen_.exterracraft.block.BlockExterranium;
 import com._izen_.exterracraft.block.BlockExterraniumOre;
+import com._izen_.exterracraft.block.BlockTileEntityEC;
 import com._izen_.exterracraft.reference.Reference;
 
 import cpw.mods.fml.common.registry.GameRegistry;

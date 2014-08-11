@@ -42,6 +42,8 @@ public class Exterracraft
 	{
 		// GUI
 		// Tileentitys
+		proxy.registerTileEntitys();
+		
 		// Recipes
 		Recipes.init();
 		Smelting.init();
