@@ -1,11 +1,22 @@
 # Item localizations
 item.exterracraft:exterranium_ingot.name=Exterranium Ingot
+item.exterracraft:exterranium_ingot_charged.name=Charged Exterranium Ingot
 item.exterracraft:exterranium_dust.name=Exterranium Dust
+item.exterracraft:exterranium_dust_charged.name=Charged Exterranium Dust
+item.exterracraft:ex_charge_meter.name=Ex-Energy Meter
+item.exterracraft:data_tablet.name=Data Tablet
+item.exterracraft:block_absorber.name=Block Absorber
 
 # Block localizations
 tile.exterracraft:exterranium_ore.name=Exterranium Ore
 tile.exterracraft:exterranium_block.name=Exterranium Block
+tile.exterracraft:exterranium_block_charged.name=Charged Exterranium Block
 tile.exterracraft:atomizer.name=Atomizer
 
-# Misc localizations
+# Creative Tabs
 itemGroup.exterracraft=Exterracraft
+
+# Keys
+keys.exterracraft.category=Exterracraft
+keys.exterracraft.charge=Charge
+keys.exterracraft.release=Release

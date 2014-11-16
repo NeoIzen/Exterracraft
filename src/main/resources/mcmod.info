@@ -2,7 +2,7 @@
 {
   "modid": "exterracraft",
   "name": "Exterracraft",
-  "description": "!",
+  "description": "Harness the power of alien technology! Become a cyborg to rule over Minecraft!",
   "version": "${mod_version}",
   "mcversion": "${minecraft_version}",
   "url": "",
@@ -11,7 +11,7 @@
     "_izen_"
   ],
   "credits": "_izen_",
-  "logoFile": "",
+  "logoFile": "assets/exterracraft/textures/logo/logo.png",
   "screenshots": [
   ],
   "parent":"",

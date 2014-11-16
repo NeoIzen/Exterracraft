@@ -22,7 +22,9 @@ group= "com._izen_.exterracraft" // http://maven.apache.org/guides/mini/guide-na
 archivesBaseName = "Exterracraft"
 
 minecraft {
-    version = "1.7.10-10.13.0.1199"
+    version = "1.7.10-10.13.2.1230"
+	
+	replace "@VERSION@", project.version
 }
 
 dependencies {

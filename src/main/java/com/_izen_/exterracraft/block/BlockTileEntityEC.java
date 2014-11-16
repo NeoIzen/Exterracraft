@@ -17,8 +17,6 @@ import com._izen_.exterracraft.tileentity.TileEntityEC;
 public abstract class BlockTileEntityEC extends BlockEC implements ITileEntityProvider
 {
 	private Random random = new Random();
-	
-    private static final String __OBFID = "CL_00000193";
 
     protected BlockTileEntityEC()
     {

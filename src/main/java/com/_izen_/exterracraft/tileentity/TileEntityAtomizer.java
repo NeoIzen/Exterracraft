@@ -1,8 +1,21 @@
 package com._izen_.exterracraft.tileentity;
 
+import com._izen_.exterracraft.block.BlockAtomizer;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
@@ -38,20 +51,25 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize(int slot, int par1)
+	public ItemStack decrStackSize(int slot, int par2)
 	{
 		if(this.itemStacks[slot] != null)
 		{
 			ItemStack itemStack;
 			
-			if(this.itemStacks[slot].stackSize <= par1)
+			if(this.itemStacks[slot].stackSize <= par2)
 			{
 				itemStack = this.itemStacks[slot];
 				this.itemStacks[slot] = null;
 			}
 			else
 			{
-				itemStack = this.itemStacks[slot].splitStack(par1);
+				itemStack = this.itemStacks[slot].splitStack(par2);
+				
+				if(this.itemStacks[slot].stackSize == 0)
+				{
+					this.itemStacks[slot] = null;
+				}
 			}
 			
 			return itemStack;
@@ -66,6 +84,7 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 		if(this.itemStacks[slot] != null)
 		{
 			ItemStack itemStack = this.itemStacks[slot];
+			this.itemStacks[slot] = null;
 			
 			return itemStack;
 		}
@@ -74,80 +93,273 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 	}
 
 	@Override
-	public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_)
+	public void setInventorySlotContents(int slot, ItemStack itemStack)
 	{
-		// TODO Auto-generated method stub
+		this.itemStacks[slot] = itemStack;
 		
+		if(itemStack != null && itemStack.stackSize > this.getInventoryStackLimit())
+		{
+			itemStack.stackSize = this.getInventoryStackLimit();
+		}
 	}
 
 	@Override
 	public String getInventoryName()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.hasCustomInventoryName()? this.name : "Atomizer";
 	}
 
 	@Override
 	public boolean hasCustomInventoryName()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return this.name != null && this.name.length() > 0;
 	}
 
 	@Override
 	public int getInventoryStackLimit()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return 64;
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer p_70300_1_)
+	public boolean isUseableByPlayer(EntityPlayer player)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : player.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
 	}
 
 	@Override
 	public void openInventory()
-	{
-		// TODO Auto-generated method stub
-		
+	{		
 	}
 
 	@Override
 	public void closeInventory()
-	{
-		// TODO Auto-generated method stub
-		
+	{		
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)
+	public boolean isItemValidForSlot(int slot, ItemStack itemStack)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return slot == 2? false : (slot == 1? isItemFuel(itemStack) : true);
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int p_94128_1_)
+	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return side == 0? slotsBottom : (side == 1 ? slotsTop : slotsSides);
 	}
 
 	@Override
-	public boolean canInsertItem(int p_102007_1_, ItemStack p_102007_2_, int p_102007_3_)
+	public boolean canInsertItem(int slot, ItemStack itemStack, int side)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return this.isItemValidForSlot(slot, itemStack);
 	}
 
 	@Override
-	public boolean canExtractItem(int p_102008_1_, ItemStack p_102008_2_, int p_102008_3_)
+	public boolean canExtractItem(int slot, ItemStack itemStack, int side)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return side != 0 || slot != 1 || itemStack.getItem() == Items.bucket;
 	}
 	
+	@Override
+	public void readFromNBT(NBTTagCompound tagCompound)
+	{
+		super.readFromNBT(tagCompound);
+		
+		NBTTagList tagList = tagCompound.getTagList("items", 9);
+		this.itemStacks = new ItemStack[this.getSizeInventory()];
+		
+		for(int i = 0; i < tagList.tagCount(); ++i)
+		{
+			NBTTagCompound tagCompound1 = tagList.getCompoundTagAt(i);
+			byte slot = tagCompound1.getByte("slot");
+			
+			if(slot >= 0 && slot < this.itemStacks.length)
+			{
+				this.itemStacks[slot] = ItemStack.loadItemStackFromNBT(tagCompound1);
+			}
+		}
+		
+		this.burnTime = tagCompound.getShort("burnTime");
+		this.cookTime = tagCompound.getShort("cookTime");
+		this.currentBurnTime = getItemBurnTime(this.itemStacks[1]);
+		
+		if(tagCompound.hasKey("customName", 8))
+		{
+			this.name = tagCompound.getString("customName");
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound tagCompound)
+	{
+		super.writeToNBT(tagCompound);
+		
+		NBTTagList tagList = new NBTTagList();
+		
+		for(int i = 0; i < this.itemStacks.length; ++i)
+		{
+			if(this.itemStacks[i] != null)
+			{
+				NBTTagCompound tagCompound1 = new NBTTagCompound();
+				
+				tagCompound1.setByte("slot", (byte)i);
+				this.itemStacks[i].writeToNBT(tagCompound1);
+				tagList.appendTag(tagCompound1);
+			}
+		}
+		
+		tagCompound.setTag("items", tagList);
+
+		tagCompound.setShort("burnTime", (short)this.burnTime);
+		tagCompound.setShort("cookTime", (short)this.cookTime);
+		
+		if(this.hasCustomInventoryName())
+		{
+			tagCompound.setString("customName", this.name);
+		}
+	}
+	
+	@Override
+	public void updateEntity()
+	{
+		boolean flag = this.burnTime > 0;
+		boolean flag1 = false;
+		
+		if(this.burnTime > 0)
+		{
+			--this.burnTime;
+		}
+		
+		if(!this.worldObj.isRemote)
+		{
+			if(this.burnTime == 0 && this.canSmelt())
+			{
+				this.currentBurnTime = this.burnTime = getItemBurnTime(this.itemStacks[1]);
+				
+				if(this.burnTime > 0)
+				{
+					flag1 = true;
+					if(this.itemStacks[1] != null)
+					{
+						--this.itemStacks[1].stackSize;
+						
+						if(this.itemStacks[1].stackSize == 0)
+						{
+							this.itemStacks[1] = this.itemStacks[1].getItem().getContainerItem(this.itemStacks[1]);
+						}
+					}
+				}
+			}
+			
+			if(this.isBurning() && this.canSmelt())
+			{
+				++this.cookTime;
+				
+				if(this.cookTime == 200)
+				{
+					this.cookTime = 0;
+					this.smeltItem();
+					flag1 = true;
+				}
+			}
+			else
+			{
+				this.cookTime = 0;
+			}
+		}
+		
+		if(flag != this.burnTime > 0)
+		{
+			flag1 = true;
+			//BlockAtomizer.updateBlockState(this.burnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+		}
+		
+		if(flag1)
+		{
+			this.markDirty();
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	public int getCookProgressScaled(int par1)
+	{
+		return this.cookTime * par1 / 200;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public int getBurnTimeRemainingScaled(int par1)
+	{
+		if(this.currentBurnTime == 0)
+		{
+			this.currentBurnTime = 200;
+		}
+		
+		return this.burnTime * par1 / this.currentBurnTime;
+	}
+	
+	public boolean isBurning()
+	{
+		return this.burnTime > 0;
+	}
+	
+	private boolean canSmelt()
+	{
+		if(this.itemStacks[0] != null)
+		{
+			return false;
+		}
+		else
+		{
+			ItemStack itemStack = FurnaceRecipes.smelting().getSmeltingResult(this.itemStacks[0]);
+			
+			if(itemStack == null) return false;
+			if(this.itemStacks[2] == null) return true;
+			if(!this.itemStacks[2].isItemEqual(itemStack)) return false;
+			
+			int result = this.itemStacks[2].stackSize + itemStack.stackSize;
+			return result <= this.getInventoryStackLimit() && result <= this.itemStacks[2].getMaxStackSize();
+		}
+	}
+	
+	public void smeltItem()
+	{
+		if(this.canSmelt())
+		{
+			ItemStack itemStack = FurnaceRecipes.smelting().getSmeltingResult(this.itemStacks[0]);
+			
+			if(this.itemStacks[2] == null)
+			{
+				this.itemStacks[2] = itemStack.copy();
+			}
+			else if(this.itemStacks[2].getItem() == itemStack.getItem())
+			{
+				this.itemStacks[2].stackSize += itemStack.stackSize;
+			}
+		}
+	}
+	
+	private static int getItemBurnTime(ItemStack itemStack)
+	{
+		if(itemStack == null)
+		{
+			return 0;
+		}
+		else
+		{
+			Item item = itemStack.getItem();
+			
+			if(item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.air)
+			{
+				Block block = Block.getBlockFromItem(item);
+			}
+			
+			return GameRegistry.getFuelValue(itemStack);
+		}
+	}
+	
+	public static boolean isItemFuel(ItemStack itemStack)
+	{
+		return getItemBurnTime(itemStack) > 0;
+	}
 }

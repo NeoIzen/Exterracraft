@@ -1,5 +1,7 @@
 package com._izen_.exterracraft.block;
 
+import java.util.List;
+
 import com._izen_.exterracraft.creativetab.CreativeTabEC;
 import com._izen_.exterracraft.reference.Reference;
 
@@ -8,6 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 
 public class BlockEC extends Block
