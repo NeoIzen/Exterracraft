@@ -3,15 +3,19 @@ item.exterracraft:exterranium_ingot.name=Exterranium Ingot
 item.exterracraft:exterranium_ingot_charged.name=Charged Exterranium Ingot
 item.exterracraft:exterranium_dust.name=Exterranium Dust
 item.exterracraft:exterranium_dust_charged.name=Charged Exterranium Dust
+item.exterracraft:lead_ingot.name=Lead Ingot
 item.exterracraft:ex_charge_meter.name=Ex-Energy Meter
 item.exterracraft:data_tablet.name=Data Tablet
 item.exterracraft:block_absorber.name=Block Absorber
+item.exterracraft:sling_plant_seeds.name=Sling Plant Seeds
+item.exterracraft:sling_blossom.name=Sling Blossom
 
 # Block localizations
 tile.exterracraft:exterranium_ore.name=Exterranium Ore
 tile.exterracraft:exterranium_block.name=Exterranium Block
 tile.exterracraft:exterranium_block_charged.name=Charged Exterranium Block
 tile.exterracraft:atomizer.name=Atomizer
+tile.exterracraft:sling_plant.name=Sling Plant
 
 # Creative Tabs
 itemGroup.exterracraft=Exterracraft

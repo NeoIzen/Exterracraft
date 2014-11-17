@@ -2,12 +2,15 @@ package com._izen_.exterracraft.block;
 
 import java.util.Random;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import com._izen_.exterracraft.client.particle.EntityCyanDustFX;
 import com._izen_.exterracraft.client.renderer.RendererExterraniumOre;
 import com._izen_.exterracraft.tileentity.TileEntityExterraniumOre;
 import com._izen_.exterracraft.utility.LogHelper;
@@ -150,7 +153,7 @@ public class BlockExterraniumOre extends BlockTileEntityEC
 					
 					if(d1 < (double)x || d1 > (double)(x + 1) || d2 < 0.0D || d2 > (double)(y + 1) || d3 < (double)z || d3 > (double)(z + 1))
 					{
-						world.spawnParticle("reddust", d1, d2, d3, 0.0D, 0.0D, 0.0D);
+						Minecraft.getMinecraft().effectRenderer.addEffect(new EntityCyanDustFX(world, d1, d2, d3, 0F, 0F, 0F));
 					}
 				}
 			}

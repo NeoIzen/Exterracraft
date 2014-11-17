@@ -7,6 +7,6 @@ public class Recipes
 {
 	public static void init()
 	{
-		GameRegistry.addShapedRecipe(new ItemStack(ModBlocks.exterraniumBlock), "###", "###", "###", '#', new ItemStack(ModItems.exterraniumIngot));
+		GameRegistry.addShapedRecipe(new ItemStack(ECBlocks.exterraniumBlock), "###", "###", "###", '#', new ItemStack(ECItems.exterraniumIngot));
 	}
 }

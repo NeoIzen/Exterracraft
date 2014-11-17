@@ -18,6 +18,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerRenderHandler()
 	{
-		RenderingRegistry.registerBlockHandler(new RendererExterraniumOre());		
+		RenderingRegistry.registerBlockHandler(new RendererExterraniumOre());
 	}
 }

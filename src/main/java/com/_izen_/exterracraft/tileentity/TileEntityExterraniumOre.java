@@ -8,7 +8,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
 
 import com._izen_.exterracraft.block.BlockExterraniumOre;
-import com._izen_.exterracraft.init.ModBlocks;
+import com._izen_.exterracraft.init.ECBlocks;
 import com._izen_.exterracraft.utility.LogHelper;
 
 public class TileEntityExterraniumOre extends TileEntityEC implements TileEntityExRadiationEmitter
@@ -23,6 +23,7 @@ public class TileEntityExterraniumOre extends TileEntityEC implements TileEntity
 	@Override
 	public void updateEntity()
 	{
+		super.updateEntity();
 	}
 
 	@Override

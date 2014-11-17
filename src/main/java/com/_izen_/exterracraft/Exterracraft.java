@@ -5,21 +5,23 @@ import net.minecraft.launchwrapper.Launch;
 import com._izen_.exterracraft.client.handler.KeyInputEventHandler;
 import com._izen_.exterracraft.handler.ConfigurationHandler;
 import com._izen_.exterracraft.handler.GuiHandler;
-import com._izen_.exterracraft.init.ModBlocks;
-import com._izen_.exterracraft.init.ModItems;
+import com._izen_.exterracraft.init.ECBlocks;
+import com._izen_.exterracraft.init.ECItems;
+import com._izen_.exterracraft.init.ECOreDictionary;
 import com._izen_.exterracraft.init.Recipes;
 import com._izen_.exterracraft.init.Smelting;
 import com._izen_.exterracraft.proxy.IProxy;
 import com._izen_.exterracraft.reference.Reference;
+import com._izen_.exterracraft.worldgen.WorldGenerator;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
 public class Exterracraft
@@ -32,6 +34,8 @@ public class Exterracraft
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static IProxy proxy;
 	
+	WorldGenerator worldGenerator = new WorldGenerator();
+	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -43,9 +47,11 @@ public class Exterracraft
 		// KeyBindings
 		proxy.registerKeyBindings();
 		
+		GameRegistry.registerWorldGenerator(this.worldGenerator, 0);
 		// Items/Blocks
-		ModItems.init();
-		ModBlocks.init();
+		ECItems.init();
+		ECBlocks.init();
+		ECOreDictionary.init();
 	}
 	
 	@Mod.EventHandler

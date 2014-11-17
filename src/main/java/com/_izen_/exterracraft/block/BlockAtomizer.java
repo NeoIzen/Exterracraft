@@ -3,7 +3,7 @@ package com._izen_.exterracraft.block;
 import java.util.Random;
 
 import com._izen_.exterracraft.Exterracraft;
-import com._izen_.exterracraft.init.ModBlocks;
+import com._izen_.exterracraft.init.ECBlocks;
 import com._izen_.exterracraft.tileentity.TileEntityAtomizer;
 
 import net.minecraft.block.Block;

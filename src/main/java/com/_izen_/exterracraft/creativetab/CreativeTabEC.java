@@ -1,6 +1,6 @@
 package com._izen_.exterracraft.creativetab;
 
-import com._izen_.exterracraft.init.ModItems;
+import com._izen_.exterracraft.init.ECItems;
 import com._izen_.exterracraft.reference.Reference;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,7 +13,7 @@ public class CreativeTabEC
 		@Override
 		public Item getTabIconItem()
 		{
-			return ModItems.exterraniumIngot;
+			return ECItems.exterraniumIngot;
 		}
 	};
 }

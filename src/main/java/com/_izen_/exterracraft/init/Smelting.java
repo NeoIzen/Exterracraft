@@ -7,6 +7,6 @@ public class Smelting
 {
 	public static void init()
 	{
-		GameRegistry.addSmelting(ModItems.exterraniumDust, new ItemStack(ModItems.exterraniumIngot), 0);
+		GameRegistry.addSmelting(ECBlocks.leadOre, new ItemStack(ECItems.leadIngot), 0);
 	}
 }
