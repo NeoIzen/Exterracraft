@@ -10,6 +10,7 @@ import com._izen_.exterracraft.init.ECItems;
 import com._izen_.exterracraft.init.ECOreDictionary;
 import com._izen_.exterracraft.init.Recipes;
 import com._izen_.exterracraft.init.Smelting;
+import com._izen_.exterracraft.intermod.waila.WailaRegistrar;
 import com._izen_.exterracraft.proxy.IProxy;
 import com._izen_.exterracraft.reference.Reference;
 import com._izen_.exterracraft.worldgen.WorldGenerator;
@@ -18,6 +19,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -70,11 +72,12 @@ public class Exterracraft
 		// Recipes
 		Recipes.init();
 		Smelting.init();
+		
+		FMLInterModComms.sendMessage("Waila", "register", WailaRegistrar.classPath);
 	}
 	
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		
 	}
 }

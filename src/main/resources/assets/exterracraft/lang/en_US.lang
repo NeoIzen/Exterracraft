@@ -14,6 +14,7 @@ item.exterracraft:sling_blossom.name=Sling Blossom
 tile.exterracraft:exterranium_ore.name=Exterranium Ore
 tile.exterracraft:exterranium_block.name=Exterranium Block
 tile.exterracraft:exterranium_block_charged.name=Charged Exterranium Block
+tile.exterracraft:dirt_infused.name=Exterranium Infused Dirt
 tile.exterracraft:atomizer.name=Atomizer
 tile.exterracraft:sling_plant.name=Sling Plant
 

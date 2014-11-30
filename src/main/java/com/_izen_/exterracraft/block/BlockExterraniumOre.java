@@ -2,9 +2,10 @@ package com._izen_.exterracraft.block;
 
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -12,7 +13,9 @@ import net.minecraft.world.World;
 
 import com._izen_.exterracraft.client.particle.EntityCyanDustFX;
 import com._izen_.exterracraft.client.renderer.RendererExterraniumOre;
+import com._izen_.exterracraft.init.ECBlocks;
 import com._izen_.exterracraft.tileentity.TileEntityExterraniumOre;
+import com._izen_.exterracraft.utility.InfusionHelper;
 import com._izen_.exterracraft.utility.LogHelper;
 
 import cpw.mods.fml.relauncher.Side;
@@ -35,27 +38,31 @@ public class BlockExterraniumOre extends BlockTileEntityEC
 		return new TileEntityExterraniumOre();
 	}
 	
+	// Updates	
 	/*@Override
-	public int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{
-		TileEntity tileEntity = blockAccess.getTileEntity(x, y, z);
+		int powerLevel = 0;
+		
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if(tileEntity instanceof TileEntityExterraniumOre)
+			powerLevel = ((TileEntityExterraniumOre)tileEntity).getPowerLevel();
+		
+		if(powerLevel > 0)
 		{
-			TileEntityExterraniumOre tileEntityExterraniumOre = (TileEntityExterraniumOre)tileEntity;
-			
-			float lightLevel = ((float)tileEntityExterraniumOre.getPowerLevel() / (float)tileEntityExterraniumOre.maxPowerLevel) * 15F;
-			return (int)lightLevel;
+			if(InfusionHelper.InfuseDirtAndGrass(world, x, y, z, InfusionHelper.powerLevelToMeta(powerLevel)))
+			{
+				InfusionHelper.triggerUpdate(world, x - 1, y, z);
+				InfusionHelper.triggerUpdate(world, x + 1, y, z);
+				InfusionHelper.triggerUpdate(world, x, y - 1, z);
+				InfusionHelper.triggerUpdate(world, x, y + 1, z);
+				InfusionHelper.triggerUpdate(world, x, y, z - 1);
+				InfusionHelper.triggerUpdate(world, x, y, z + 1);
+			}
 		}
-		else
-			return 0;
 	}*/
 	
-	@Override
-	public int getLightValue()
-	{
-		return 0;
-	}
-	
+	// Render stuff	
 	@Override
 	public boolean isOpaqueCube()
 	{

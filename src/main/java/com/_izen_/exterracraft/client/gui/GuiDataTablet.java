@@ -14,7 +14,7 @@ public class GuiDataTablet extends GuiScreen
 	private World world;
 	private int xSize, ySize;
 	
-	private ResourceLocation bgImage = new ResourceLocation(Reference.GUI_PATH + "mygui.png");
+	private ResourceLocation bgImage = new ResourceLocation(Reference.GUI_PATH + "data_tablet.png");
 	
 	public GuiDataTablet(EntityPlayer player, World world, int x, int y, int z)
 	{

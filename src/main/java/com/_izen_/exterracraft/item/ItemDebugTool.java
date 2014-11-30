@@ -7,7 +7,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com._izen_.exterracraft.tileentity.TileEntityExRadiationEmitter;
-import com._izen_.exterracraft.utility.LogHelper;
 
 public class ItemDebugTool extends ItemEC
 {
@@ -20,7 +19,7 @@ public class ItemDebugTool extends ItemEC
 
 	@Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int xBlock, int yBlock, int zBlock, int blockSide, float par8, float par9, float par10)
-    {	
+    {
 		Block block = world.getBlock(xBlock, yBlock, zBlock);
 		if(block.hasTileEntity(world.getBlockMetadata(xBlock, yBlock, zBlock)))
 		{

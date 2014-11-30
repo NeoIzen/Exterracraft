@@ -9,11 +9,13 @@ import net.minecraft.util.MathHelper;
 
 import com._izen_.exterracraft.block.BlockExterraniumOre;
 import com._izen_.exterracraft.init.ECBlocks;
+import com._izen_.exterracraft.utility.InfusionHelper;
 import com._izen_.exterracraft.utility.LogHelper;
 
 public class TileEntityExterraniumOre extends TileEntityEC implements TileEntityExRadiationEmitter
 {
 	private int powerLevel = 0;
+	private int dirtAndGrassMeta = 0;
 	public static final int maxPowerLevel = 65535;
 	
 	public TileEntityExterraniumOre()
@@ -31,7 +33,7 @@ public class TileEntityExterraniumOre extends TileEntityEC implements TileEntity
 	{
 		super.readFromNBT(tag);
 		
-		powerLevel = tag.getInteger("powerLevel");
+		this.powerLevel = tag.getInteger("powerLevel");
 	}
 	
 	@Override
@@ -39,7 +41,7 @@ public class TileEntityExterraniumOre extends TileEntityEC implements TileEntity
 	{
 		super.writeToNBT(tag);
 		
-		tag.setInteger("powerLevel", powerLevel);
+		tag.setInteger("powerLevel", this.powerLevel);
 	}
 	
 	@Override
@@ -55,7 +57,7 @@ public class TileEntityExterraniumOre extends TileEntityEC implements TileEntity
 
 	       this.writeToNBT(var1);
 
-	       return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, var1);
+	       return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, var1);
 	}
 	
 	@Override
@@ -65,7 +67,20 @@ public class TileEntityExterraniumOre extends TileEntityEC implements TileEntity
 		{
 			this.powerLevel = MathHelper.clamp_int(powerLevel, 0, this.maxPowerLevel);
 			markDirty();
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		}
+		
+		if(this.dirtAndGrassMeta != InfusionHelper.powerLevelToMeta(this.powerLevel))
+		{
+			this.dirtAndGrassMeta = InfusionHelper.powerLevelToMeta(this.powerLevel);
+			InfusionHelper.InfuseDirtAndGrass(this.worldObj, this.xCoord, this.yCoord, this.zCoord, this.dirtAndGrassMeta);
+
+			InfusionHelper.triggerUpdate(this.worldObj, this.xCoord - 1, this.yCoord, this.zCoord);
+			InfusionHelper.triggerUpdate(this.worldObj, this.xCoord + 1, this.yCoord, this.zCoord);
+			InfusionHelper.triggerUpdate(this.worldObj, this.xCoord, this.yCoord - 1, this.zCoord);
+			InfusionHelper.triggerUpdate(this.worldObj, this.xCoord, this.yCoord + 1, this.zCoord);
+			InfusionHelper.triggerUpdate(this.worldObj, this.xCoord, this.yCoord, this.zCoord - 1);
+			InfusionHelper.triggerUpdate(this.worldObj, this.xCoord, this.yCoord, this.zCoord + 1);
 		}
 	}
 
