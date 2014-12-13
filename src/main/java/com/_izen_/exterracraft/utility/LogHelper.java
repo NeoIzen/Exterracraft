@@ -1,10 +1,10 @@
 package com._izen_.exterracraft.utility;
 
+import net.minecraftforge.fml.common.FMLLog;
+
 import org.apache.logging.log4j.Level;
 
 import com._izen_.exterracraft.reference.Reference;
-
-import cpw.mods.fml.common.FMLLog;
 
 public class LogHelper
 {

@@ -1,11 +1,10 @@
 package com._izen_.exterracraft.client.handler;
 
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+
 import com._izen_.exterracraft.client.settings.KeyBindings;
 import com._izen_.exterracraft.reference.Key;
-import com._izen_.exterracraft.utility.LogHelper;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
 
 public class KeyInputEventHandler
 {

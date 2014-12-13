@@ -1,10 +1,9 @@
 package com._izen_.exterracraft.proxy;
 
-import com._izen_.exterracraft.reference.Reference;
-import com._izen_.exterracraft.tileentity.TileEntityAtomizer;
-import com._izen_.exterracraft.tileentity.TileEntityExterraniumOre;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import com._izen_.exterracraft.reference.Reference;
+import com._izen_.exterracraft.tileentity.TileEntityExterraniumOre;
 
 public abstract class CommonProxy implements IProxy
 {
@@ -14,4 +13,5 @@ public abstract class CommonProxy implements IProxy
 		//GameRegistry.registerTileEntity(TileEntityAtomizer.class, Reference.MOD_ID + ":" + "atomizer");
 		GameRegistry.registerTileEntity(TileEntityExterraniumOre.class, Reference.MOD_ID + ":" + "exterraniumOre");
 	}
+	
 }

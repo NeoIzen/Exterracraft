@@ -1,10 +1,5 @@
 package com._izen_.exterracraft.tileentity;
 
-import com._izen_.exterracraft.block.BlockAtomizer;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -16,7 +11,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 {
@@ -103,7 +102,7 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 		}
 	}
 
-	@Override
+	/*@Override
 	public String getInventoryName()
 	{
 		return this.hasCustomInventoryName()? this.name : "Atomizer";
@@ -113,7 +112,7 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 	public boolean hasCustomInventoryName()
 	{
 		return this.name != null && this.name.length() > 0;
-	}
+	}*/
 
 	@Override
 	public int getInventoryStackLimit()
@@ -124,10 +123,10 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player)
 	{
-		return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : player.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
+		return this.worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq(pos.add(0.5, 0.5, 0.5)) <= 64.0D;
 	}
 
-	@Override
+	/*@Override
 	public void openInventory()
 	{		
 	}
@@ -135,7 +134,7 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 	@Override
 	public void closeInventory()
 	{		
-	}
+	}*/
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack itemStack)
@@ -144,21 +143,22 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return side == 0? slotsBottom : (side == 1 ? slotsTop : slotsSides);
+		return null;
 	}
 
 	@Override
-	public boolean canInsertItem(int slot, ItemStack itemStack, int side)
+	public boolean canInsertItem(int slot, ItemStack itemStack, EnumFacing side)
 	{
 		return this.isItemValidForSlot(slot, itemStack);
 	}
 
 	@Override
-	public boolean canExtractItem(int slot, ItemStack itemStack, int side)
+	public boolean canExtractItem(int slot, ItemStack itemStack, EnumFacing side)
 	{
-		return side != 0 || slot != 1 || itemStack.getItem() == Items.bucket;
+		//return side != 0 || slot != 1 || itemStack.getItem() == Items.bucket;
+		return false;
 	}
 	
 	@Override
@@ -214,13 +214,13 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 		tagCompound.setShort("burnTime", (short)this.burnTime);
 		tagCompound.setShort("cookTime", (short)this.cookTime);
 		
-		if(this.hasCustomInventoryName())
+		if(this.hasCustomName())
 		{
 			tagCompound.setString("customName", this.name);
 		}
 	}
 	
-	@Override
+	/*@Override
 	public void updateEntity()
 	{
 		boolean flag = this.burnTime > 0;
@@ -279,7 +279,7 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 		{
 			this.markDirty();
 		}
-	}
+	}*/
 
 	@SideOnly(Side.CLIENT)
 	public int getCookProgressScaled(int par1)
@@ -303,7 +303,7 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 		return this.burnTime > 0;
 	}
 	
-	private boolean canSmelt()
+	/*private boolean canSmelt()
 	{
 		if(this.itemStacks[0] != null)
 		{
@@ -320,9 +320,9 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 			int result = this.itemStacks[2].stackSize + itemStack.stackSize;
 			return result <= this.getInventoryStackLimit() && result <= this.itemStacks[2].getMaxStackSize();
 		}
-	}
+	}*/
 	
-	public void smeltItem()
+	/*public void smeltItem()
 	{
 		if(this.canSmelt())
 		{
@@ -337,7 +337,7 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 				this.itemStacks[2].stackSize += itemStack.stackSize;
 			}
 		}
-	}
+	}*/
 	
 	private static int getItemBurnTime(ItemStack itemStack)
 	{
@@ -361,5 +361,68 @@ public class TileEntityAtomizer extends TileEntityEC implements ISidedInventory
 	public static boolean isItemFuel(ItemStack itemStack)
 	{
 		return getItemBurnTime(itemStack) > 0;
+	}
+
+	@Override
+	public void openInventory(EntityPlayer playerIn)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closeInventory(EntityPlayer playerIn)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getField(int id)
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getName()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean hasCustomName()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public IChatComponent getDisplayName()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

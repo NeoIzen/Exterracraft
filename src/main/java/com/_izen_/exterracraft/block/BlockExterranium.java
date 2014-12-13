@@ -2,9 +2,8 @@ package com._izen_.exterracraft.block;
 
 public class BlockExterranium extends BlockEC
 {
-	public BlockExterranium()
+	public BlockExterranium(String name)
 	{
-		super();
-		this.setBlockName("exterranium_block");
+		super(name);
 	}
 }

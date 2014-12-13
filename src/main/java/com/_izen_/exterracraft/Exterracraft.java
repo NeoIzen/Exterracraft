@@ -1,6 +1,15 @@
 package com._izen_.exterracraft;
 
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com._izen_.exterracraft.client.handler.KeyInputEventHandler;
 import com._izen_.exterracraft.handler.ConfigurationHandler;
@@ -10,20 +19,9 @@ import com._izen_.exterracraft.init.ECItems;
 import com._izen_.exterracraft.init.ECOreDictionary;
 import com._izen_.exterracraft.init.Recipes;
 import com._izen_.exterracraft.init.Smelting;
-import com._izen_.exterracraft.intermod.waila.WailaRegistrar;
 import com._izen_.exterracraft.proxy.IProxy;
 import com._izen_.exterracraft.reference.Reference;
 import com._izen_.exterracraft.worldgen.WorldGenerator;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
 public class Exterracraft
@@ -66,14 +64,15 @@ public class Exterracraft
 		// Tileentitys
 		proxy.registerTileEntitys();
 		
-		// Renderer
+		// Rendererstuff
+		proxy.registerItemModels();
 		proxy.registerRenderHandler();
 		
 		// Recipes
 		Recipes.init();
 		Smelting.init();
 		
-		FMLInterModComms.sendMessage("Waila", "register", WailaRegistrar.classPath);
+		//FMLInterModComms.sendMessage("Waila", "register", WailaRegistrar.classPath);
 	}
 	
 	@Mod.EventHandler

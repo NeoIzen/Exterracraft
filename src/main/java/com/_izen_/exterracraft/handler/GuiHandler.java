@@ -2,11 +2,10 @@ package com._izen_.exterracraft.handler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import com._izen_.exterracraft.client.gui.GuiDataTablet;
 import com._izen_.exterracraft.utility.LogHelper;
-
-import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler
 {

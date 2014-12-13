@@ -4,9 +4,8 @@ import com._izen_.exterracraft.creativetab.CreativeTabEC;
 
 public class ItemExterraniumIngot extends ItemEC
 {
-	public ItemExterraniumIngot()
+	public ItemExterraniumIngot(String name)
 	{
-		super();
-		this.setUnlocalizedName("exterranium_ingot");
+		super(name);
 	}
 }

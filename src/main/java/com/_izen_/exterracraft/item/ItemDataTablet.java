@@ -9,10 +9,9 @@ import net.minecraft.world.World;
 
 public class ItemDataTablet extends ItemEC
 {
-	public ItemDataTablet()
+	public ItemDataTablet(String name)
 	{
-		super();
-		this.setUnlocalizedName("data_tablet");
+		super(name);
 		this.setMaxStackSize(1);
 	}
 	

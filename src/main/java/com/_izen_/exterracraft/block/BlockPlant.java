@@ -1,128 +1,110 @@
 package com._izen_.exterracraft.block;
 
-import static net.minecraftforge.common.EnumPlantType.Cave;
-import static net.minecraftforge.common.EnumPlantType.Crop;
-import static net.minecraftforge.common.EnumPlantType.Desert;
-import static net.minecraftforge.common.EnumPlantType.Nether;
-import static net.minecraftforge.common.EnumPlantType.Plains;
-import static net.minecraftforge.common.EnumPlantType.Water;
-
-import java.util.ArrayList;
 import java.util.Random;
 
-import com._izen_.exterracraft.init.ECBlocks;
-import com._izen_.exterracraft.init.ECItems;
-import com._izen_.exterracraft.reference.Reference;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import com._izen_.exterracraft.init.ECBlocks;
 
 public class BlockPlant extends BlockEC implements IPlantable
 {
-	protected BlockPlant(Material material)
+	protected BlockPlant(Material material, String name)
     {
-        super(material);
+        super(material, name);
         this.setTickRandomly(true);
         float f = 0.2F;
         this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f * 3.0F, 0.5F + f);
     }
 
-    protected BlockPlant()
+    protected BlockPlant(String name)
     {
-        this(Material.plants);
-    }
-    
-    @Override
-    public boolean canPlaceBlockAt(World world, int x, int y, int z)
-    {
-        return super.canPlaceBlockAt(world, x, y, z) && this.canBlockStay(world, x, y, z);
+        this(Material.plants, name);
     }
 
-    protected boolean canPlaceBlockOn(Block block)
+    public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
     {
-        return block == Blocks.grass || block == Blocks.dirt;
+        return super.canPlaceBlockAt(worldIn, pos) && worldIn.getBlockState(pos.offsetDown()).getBlock().canSustainPlant(worldIn, pos.offsetDown(), net.minecraft.util.EnumFacing.UP, this);
     }
 
-    @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+    /**
+     * is the block grass, dirt or farmland
+     */
+    protected boolean canPlaceBlockOn(Block ground)
     {
-        super.onNeighborBlockChange(world, x, y, z, block);
-        this.checkAndDropBlock(world, x, y, z);
+        return ground == Blocks.grass || ground == Blocks.dirt || ground == Blocks.farmland;
     }
 
-    @Override
-    public void updateTick(World world, int x, int y, int z, Random random)
+    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock)
     {
-        this.checkAndDropBlock(world, x, y, z);
+        super.onNeighborBlockChange(worldIn, pos, state, neighborBlock);
+        this.func_176475_e(worldIn, pos, state);
     }
 
-    protected void checkAndDropBlock(World world, int x, int y, int z)
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
     {
-        if (!this.canBlockStay(world, x, y, z))
+        this.func_176475_e(worldIn, pos, state);
+    }
+
+    protected void func_176475_e(World worldIn, BlockPos p_176475_2_, IBlockState p_176475_3_)
+    {
+        if (!this.canBlockStay(worldIn, p_176475_2_, p_176475_3_))
         {
-            this.dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
-            world.setBlock(x, y, z, getBlockById(0), 0, 2);
+            this.dropBlockAsItem(worldIn, p_176475_2_, p_176475_3_, 0);
+            worldIn.setBlockState(p_176475_2_, Blocks.air.getDefaultState(), 3);
         }
     }
 
-    @Override
-    public boolean canBlockStay(World world, int x, int y, int z)
+    public boolean canBlockStay(World worldIn, BlockPos p_180671_2_, IBlockState p_180671_3_)
     {
-        return  world.getBlock(x, y - 1, z).canSustainPlant(world, x, y - 1, z, ForgeDirection.UP, this);
+        return this.canPlaceBlockOn(worldIn.getBlockState(p_180671_2_.offsetDown()).getBlock());
     }
 
-    @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
     {
         return null;
     }
 
-    @Override
     public boolean isOpaqueCube()
     {
         return false;
     }
 
-    @Override
-    public boolean renderAsNormalBlock()
+    public boolean isFullCube()
     {
         return false;
     }
 
-    @Override
-    public int getRenderType()
+    @SideOnly(Side.CLIENT)
+    public EnumWorldBlockLayer getBlockLayer()
     {
-        return 1;
+        return EnumWorldBlockLayer.CUTOUT;
     }
 
     @Override
-    public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z)
+    public net.minecraftforge.common.EnumPlantType getPlantType(net.minecraft.world.IBlockAccess world, BlockPos pos)
     {
-    	if(this == ECBlocks.slingPlant) return EnumPlantType.Crop;
-        return EnumPlantType.Plains;
+        if (this == ECBlocks.slingPlant) return net.minecraftforge.common.EnumPlantType.Crop;
+        
+        return net.minecraftforge.common.EnumPlantType.Plains;
     }
 
     @Override
-    public Block getPlant(IBlockAccess world, int x, int y, int z)
+    public IBlockState getPlant(net.minecraft.world.IBlockAccess world, BlockPos pos)
     {
-        return this;
-    }
-
-    @Override
-    public int getPlantMetadata(IBlockAccess world, int x, int y, int z)
-    {
-        return world.getBlockMetadata(x, y, z);
+        IBlockState state = world.getBlockState(pos);
+        if (state.getBlock() != this) return getDefaultState();
+        return state;
     }
 }

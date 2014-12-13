@@ -1,12 +1,14 @@
 package com._izen_.exterracraft.worldgen;
 
 import java.util.Random;
-import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
+import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
 
 import com._izen_.exterracraft.init.ECBlocks;
@@ -56,105 +58,97 @@ public class WorldGenMeteorite extends net.minecraft.world.gen.feature.WorldGene
 	}
 	
 	@Override
-	public boolean generate(World world, Random random, int x, int y, int z)
+	public boolean generate(World world, Random random, BlockPos pos)
 	{
 		// Exit on client worlds
 		if(world.isRemote)
 			return false;
 		
-		double radius = 0.0;
+		double uniRadius = 0.0;
 		int powerLevel = TileEntityExterraniumOre.maxPowerLevel;
 		
 		switch(this.size)
 		{
 		case FRAGMENT:
-			radius = 1.0;
+			uniRadius = 1.0;
 			powerLevel = 0;
 			break;
 		case HUGE:
-			radius = 17.0;
+			uniRadius = 17.0;
 			powerLevel /= 1;
 			break;
 		case LARGE:
-			radius = 12.0;
+			uniRadius = 12.0;
 			powerLevel /= 2;
 			break;
 		case MEDIUM:
-			radius = 8.0;
+			uniRadius = 8.0;
 			powerLevel /= 4;
 			break;
 		case SMALL:
-			radius = 5.0;
+			uniRadius = 5.0;
 			powerLevel /= 8;
 			break;
 		case TINY:
-			radius = 3.0;
+			uniRadius = 3.0;
 			powerLevel /= 16;
 			break;
 		default:
 			break;
 		}
 		
-		double radiusX = radius * MathHelper.getRandomDoubleInRange(random, 0.9, 1.1);
-		double radiusY = radius * MathHelper.getRandomDoubleInRange(random, 0.9, 1.1);
-		double radiusZ = radius * MathHelper.getRandomDoubleInRange(random, 0.9, 1.1);
+		Vec3 radius = new Vec3(uniRadius * MathHelper.getRandomDoubleInRange(random, 0.9, 1.1), uniRadius * MathHelper.getRandomDoubleInRange(random, 0.9, 1.1), uniRadius * MathHelper.getRandomDoubleInRange(random, 0.9, 1.1));
 
-		createCrater(world, x, y, z, radiusX * 3.0, radiusY * 2.0, radiusZ * 3.0);
-		createMeteorite(world, powerLevel, x, y - (int)radiusY, z, radiusX, radiusY, radiusZ);
+		createCrater(world, pos, new Vec3(radius.xCoord * 3.0, radius.yCoord * 2.0, radius.zCoord * 3.0));
+		createMeteorite(world, powerLevel, pos.offsetDown((int)radius.yCoord), radius);
 		
 		return true;
 	}
 	
-	private void setBlockWithPowerLevel(World world, int x, int y, int z, int powerLevel)
+	private void setBlockWithPowerLevel(World world, BlockPos pos, int powerLevel)
 	{
-		if(world.getBlock(x, y, z) != ECBlocks.exterraniumOre)
+		if(world.getBlockState(pos).getBlock() != ECBlocks.exterraniumOre)
 		{
-			world.setBlock(x, y, z, ECBlocks.exterraniumOre, 0, 2);
+			world.setBlockState(pos, ECBlocks.exterraniumOre.getDefaultState(), 2);
 			
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof TileEntityExterraniumOre)
 				((TileEntityExterraniumOre)tileEntity).setPowerLevel(powerLevel);
 		}
 	}
 	
-	private void replaceBlock(World world, int x, int y, int z)
+	private void replaceBlock(World world, BlockPos pos)
 	{
-		Block oldBlock = world.getBlock(x, y, z);
-		Block newBlock = world.getBiomeGenForCoords(x, z).topBlock; // Detect biome and set block depending on biome
+		Block oldBlock = world.getBlockState(pos).getBlock();
+		Block newBlock = world.getBiomeGenForCoords(pos).topBlock.getBlock(); // Detect biome and set block depending on biome
 		
 		//if(oldBlock != Blocks.air && oldBlock != Blocks.water && oldBlock != Blocks.lava)
-			world.setBlock(x, y, z, Blocks.bedrock);
+			world.setBlockState(pos, Blocks.bedrock.getDefaultState());
 	}
 	
-	private void createMeteorite(World world, int powerLevel, int centerX, int centerY, int centerZ, double radiusX, double radiusY, double radiusZ)
-	{		
-		radiusX += 0.5;
-		radiusY += 0.5;
-		radiusZ += 0.5;
+	private void createMeteorite(World world, int powerLevel, BlockPos centerPos, Vec3 radius)
+	{
+		radius.addVector(0.5, 0.5, 0.5);
 		
-		final double invRadiusX = 1 / radiusX;
-		final double invRadiusY = 1 / radiusY;
-		final double invRadiusZ = 1 / radiusZ;
+		final Vec3 invRadius = new Vec3(1 / radius.xCoord, 1 / radius.yCoord, 1 / radius.zCoord);
 
-		final int ceilRadiusX = (int)Math.ceil(radiusX);
-		final int ceilRadiusY = (int)Math.ceil(radiusY);
-		final int ceilRadiusZ = (int)Math.ceil(radiusZ);
+		final Vec3i intRadius = new Vec3i(MathHelper.ceiling_double_int(radius.xCoord), MathHelper.ceiling_double_int(radius.yCoord), MathHelper.ceiling_double_int(radius.zCoord));
 		
 		double nextXn = 0.;
-		forX: for(int x = 0; x <= ceilRadiusX; ++x)
+		forX: for(int x = 0; x <= intRadius.getX(); ++x)
 		{
 			final double xn = nextXn;
-			nextXn = (x + 1) * invRadiusX;
+			nextXn = (x + 1) * invRadius.xCoord;
 			double nextYn = 0;
-			forY: for(int y = 0; y <= ceilRadiusY; ++y)
+			forY: for(int y = 0; y <= intRadius.getY(); ++y)
 			{
 				final double yn = nextYn;
-				nextYn = (y + 1) * invRadiusY;
+				nextYn = (y + 1) * invRadius.yCoord;
 				double nextZn = 0;
-				forZ: for(int z = 0; z < ceilRadiusZ; ++z)
+				forZ: for(int z = 0; z < intRadius.getZ(); ++z)
 				{
 					final double zn = nextZn;
-					nextZn = (z + 1) * invRadiusZ;
+					nextZn = (z + 1) * invRadius.zCoord;
 					
 					double distanceSq = ECMath.lengthSq(xn, yn, zn);
 					if(distanceSq > 1)
@@ -171,48 +165,42 @@ public class WorldGenMeteorite extends net.minecraft.world.gen.feature.WorldGene
 					}
 					
 					// Create the meteorite
-					setBlockWithPowerLevel(world, centerX + x, centerY + y, centerZ + z, powerLevel);
-					setBlockWithPowerLevel(world, centerX + x, centerY + y, centerZ - z, powerLevel);
-					setBlockWithPowerLevel(world, centerX - x, centerY + y, centerZ + z, powerLevel);
-					setBlockWithPowerLevel(world, centerX - x, centerY + y, centerZ - z, powerLevel);
-					setBlockWithPowerLevel(world, centerX + x, centerY - y, centerZ + z, powerLevel);
-					setBlockWithPowerLevel(world, centerX + x, centerY - y, centerZ - z, powerLevel);
-					setBlockWithPowerLevel(world, centerX - x, centerY - y, centerZ + z, powerLevel);
-					setBlockWithPowerLevel(world, centerX - x, centerY - y, centerZ - z, powerLevel);
+					setBlockWithPowerLevel(world, centerPos.add( x,  y,  z), powerLevel);
+					setBlockWithPowerLevel(world, centerPos.add( x,  y, -z), powerLevel);
+					setBlockWithPowerLevel(world, centerPos.add(-x,  y,  z), powerLevel);
+					setBlockWithPowerLevel(world, centerPos.add(-x,  y, -z), powerLevel);
+					setBlockWithPowerLevel(world, centerPos.add( x, -y,  z), powerLevel);
+					setBlockWithPowerLevel(world, centerPos.add( x, -y, -z), powerLevel);
+					setBlockWithPowerLevel(world, centerPos.add(-x, -y,  z), powerLevel);
+					setBlockWithPowerLevel(world, centerPos.add(-x, -y, -z), powerLevel);
 				}
 			}
 		}
 	}
 	
-	private void createCrater(World world, int centerX, int centerY, int centerZ, double radiusX, double radiusY, double radiusZ)
+	private void createCrater(World world, BlockPos centerPos, Vec3 radius)
 	{
-		radiusX += 0.5;
-		radiusY += 0.5;
-		radiusZ += 0.5;
+		radius.addVector(0.5, 0.5, 0.5);
 		
-		final double invRadiusX = 1 / radiusX;
-		final double invRadiusY = 1 / radiusY;
-		final double invRadiusZ = 1 / radiusZ;
+		final Vec3 invRadius = new Vec3(1 / radius.xCoord, 1 / radius.yCoord, 1 / radius.zCoord);
 
-		final int ceilRadiusX = (int)Math.ceil(radiusX);
-		final int ceilRadiusY = (int)Math.ceil(radiusY);
-		final int ceilRadiusZ = (int)Math.ceil(radiusZ);
+		final Vec3i intRadius = new Vec3i(MathHelper.ceiling_double_int(radius.xCoord), MathHelper.ceiling_double_int(radius.yCoord), MathHelper.ceiling_double_int(radius.zCoord));
 		
 		double nextXn = 0.;
-		forX: for(int x = 0; x <= ceilRadiusX; ++x)
+		forX: for(int x = 0; x <= intRadius.getX(); ++x)
 		{
 			final double xn = nextXn;
-			nextXn = (x + 1) * invRadiusX;
+			nextXn = (x + 1) * invRadius.xCoord;
 			double nextYn = 0;
-			forY: for(int y = 0; y <= ceilRadiusY; ++y)
+			forY: for(int y = 0; y <= intRadius.getY(); ++y)
 			{
 				final double yn = nextYn;
-				nextYn = (y + 1) * invRadiusY;
+				nextYn = (y + 1) * invRadius.yCoord;
 				double nextZn = 0;
-				forZ: for(int z = 0; z < ceilRadiusZ; ++z)
+				forZ: for(int z = 0; z < intRadius.getZ(); ++z)
 				{
 					final double zn = nextZn;
-					nextZn = (z + 1) * invRadiusZ;
+					nextZn = (z + 1) * invRadius.zCoord;
 					
 					double distanceSq = ECMath.lengthSq(xn, yn, zn);
 					if(distanceSq > 1)
@@ -234,22 +222,22 @@ public class WorldGenMeteorite extends net.minecraft.world.gen.feature.WorldGene
 					final double l3 = ECMath.lengthSq(xn, yn, nextZn);
 					if(l1 <= 1.0 && l2 <= 1.0 && l3 <= 1.0)
 					{
-						world.setBlockToAir(centerX + x, centerY - y, centerZ + z);
-						world.setBlockToAir(centerX + x, centerY - y, centerZ - z);
-						world.setBlockToAir(centerX - x, centerY - y, centerZ + z);
-						world.setBlockToAir(centerX - x, centerY - y, centerZ - z);
-						world.setBlockToAir(centerX + x, centerY + y, centerZ + z);
-						world.setBlockToAir(centerX + x, centerY + y, centerZ - z);
-						world.setBlockToAir(centerX - x, centerY + y, centerZ + z);
-						world.setBlockToAir(centerX - x, centerY + y, centerZ - z);
+						world.setBlockToAir(centerPos.add( x,  y,  z));
+						world.setBlockToAir(centerPos.add( x,  y, -z));
+						world.setBlockToAir(centerPos.add(-x,  y,  z));
+						world.setBlockToAir(centerPos.add(-x,  y, -z));
+						world.setBlockToAir(centerPos.add( x, -y,  z));
+						world.setBlockToAir(centerPos.add( x, -y, -z));
+						world.setBlockToAir(centerPos.add(-x, -y,  z));
+						world.setBlockToAir(centerPos.add(-x, -y, -z));
 					}
 					// Fill the crater
 					else
 					{
-						replaceBlock(world, centerX + x, centerY - y, centerZ + z);
-						replaceBlock(world, centerX + x, centerY - y, centerZ - z);
-						replaceBlock(world, centerX - x, centerY - y, centerZ + z);
-						replaceBlock(world, centerX - x, centerY - y, centerZ - z);
+						replaceBlock(world, centerPos.add( x, -y,  z));
+						replaceBlock(world, centerPos.add( x, -y, -z));
+						replaceBlock(world, centerPos.add(-x, -y,  z));
+						replaceBlock(world, centerPos.add(-x, -y, -z));
 					}
 				}
 			}

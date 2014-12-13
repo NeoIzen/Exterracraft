@@ -1,15 +1,12 @@
 package com._izen_.exterracraft.client.gui;
 
-import java.util.List;
-
-import com._izen_.exterracraft.handler.ConfigurationHandler;
-import com._izen_.exterracraft.reference.Reference;
-
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
-import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.client.config.GuiConfig;
+
+import com._izen_.exterracraft.handler.ConfigurationHandler;
+import com._izen_.exterracraft.reference.Reference;
 
 public class ModGuiConfig extends GuiConfig
 {

@@ -1,19 +1,16 @@
 package com._izen_.exterracraft.client.renderer;
 
-import org.lwjgl.opengl.GL11;
-
-import com._izen_.exterracraft.tileentity.TileEntityExRadiationEmitter;
-import com._izen_.exterracraft.tileentity.TileEntityExterraniumOre;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
-public class RendererExterraniumOre implements ISimpleBlockRenderingHandler
+import org.lwjgl.opengl.GL11;
+
+import com._izen_.exterracraft.tileentity.TileEntityExterraniumOre;
+
+/*public class RendererExterraniumOre implements ISimpleBlockRenderingHandler
 {
 	public final static int renderId = RenderingRegistry.getNextAvailableRenderId();
 	
@@ -86,4 +83,4 @@ public class RendererExterraniumOre implements ISimpleBlockRenderingHandler
 	{
 		return renderId;
 	}
-}
+}*/

@@ -2,28 +2,24 @@ package com._izen_.exterracraft.block;
 
 import java.util.Random;
 
-import com._izen_.exterracraft.Exterracraft;
-import com._izen_.exterracraft.init.ECBlocks;
-import com._izen_.exterracraft.tileentity.TileEntityAtomizer;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
+import com._izen_.exterracraft.Exterracraft;
+import com._izen_.exterracraft.tileentity.TileEntityAtomizer;
 
 // Its basically like an pulverizer or macerator
 public class BlockAtomizer extends BlockTileEntityEC
 {
 	private Random random = new Random();
 	
-	public BlockAtomizer()
+	public BlockAtomizer(String name)
 	{
-		super();
-		this.setBlockName("atomizer");
+		super(name);
 	}
 	
 	@Override
@@ -33,9 +29,9 @@ public class BlockAtomizer extends BlockTileEntityEC
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		player.openGui(Exterracraft.instance, 0, world, x, y, z);
+		player.openGui(Exterracraft.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 		
 		return true;
 	}

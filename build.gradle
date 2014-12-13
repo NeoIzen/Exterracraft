@@ -17,12 +17,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.1a"
+version = "1.8-0.2a"
 group= "com._izen_.exterracraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Exterracraft"
 
 minecraft {
-    version = "1.7.10-10.13.2.1230"
+    version = "1.8-11.14.0.1246-1.8"
 	
 	replace "@VERSION@", project.version
 }

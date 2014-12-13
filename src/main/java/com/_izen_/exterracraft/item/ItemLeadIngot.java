@@ -2,9 +2,8 @@ package com._izen_.exterracraft.item;
 
 public class ItemLeadIngot extends ItemEC
 {
-	public ItemLeadIngot()
+	public ItemLeadIngot(String name)
 	{
-		super();
-		this.setUnlocalizedName("lead_ingot");
+		super(name);
 	}
 }

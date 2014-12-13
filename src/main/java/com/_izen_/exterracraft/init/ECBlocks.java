@@ -1,6 +1,8 @@
 package com._izen_.exterracraft.init;
 
-import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com._izen_.exterracraft.block.BlockEC;
 import com._izen_.exterracraft.block.BlockExterranium;
@@ -10,27 +12,28 @@ import com._izen_.exterracraft.block.BlockLeadOre;
 import com._izen_.exterracraft.block.BlockSlingPlant;
 import com._izen_.exterracraft.reference.Reference;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
 public class ECBlocks
 {
-	public static final BlockEC	exterraniumOre			= new BlockExterraniumOre();
-	public static final BlockEC	exterraniumBlock		= new BlockExterranium();
-	public static final BlockEC	exterraniumBlockCharged	= new BlockExterranium();
-	public static final BlockEC leadOre					= new BlockLeadOre();
-	public static final BlockEC infusedDirt				= new BlockInfusedDirt();
-	//public static final BlockEC	atomizer				= new BlockAtomizer();
-	public static final BlockEC slingPlant				= new BlockSlingPlant();
+	public static final BlockEC	exterraniumOre			= new BlockExterraniumOre("exterranium_ore");
+	public static final BlockEC	exterraniumBlock		= new BlockExterranium("exterranium_block");
+	public static final BlockEC leadOre					= new BlockLeadOre("lead_ore");
+	public static final BlockEC infusedDirt				= new BlockInfusedDirt("infused_dirt");
+	//public static final BlockEC	atomizer				= new BlockAtomizer("atomizer");
+	public static final BlockEC slingPlant				= new BlockSlingPlant("sling_plant");
 	
 	public static void init()
 	{
-		GameRegistry.registerBlock(exterraniumOre, "exterraniumOre");
-		GameRegistry.registerBlock(exterraniumBlock, "exterraniumBlock");
-		GameRegistry.registerBlock(exterraniumBlockCharged, "exterraniumBlockCharged");
-		GameRegistry.registerBlock(leadOre, "leadOre");
-		GameRegistry.registerBlock(infusedDirt, "infusedDirt");
-		//GameRegistry.registerBlock(atomizer, "atomizer");
-		GameRegistry.registerBlock(slingPlant, "slingPlant");
+		registerBlock(exterraniumOre);
+		registerBlock(exterraniumBlock);
+		registerBlock(leadOre);
+		registerBlock(infusedDirt);
+		//registerBlock(atomizer);
+		registerBlock(slingPlant);
+	}
+	
+	private static void registerBlock(BlockEC block)
+	{
+		GameRegistry.registerBlock(block, block.getName());
 	}
 }

@@ -11,16 +11,19 @@ import com._izen_.exterracraft.utility.LogHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockInfusedDirt extends BlockEC
 {
-	public BlockInfusedDirt()
+	public static final PropertyInteger RANGE = PropertyInteger.create("range", 0, 8);
+	
+	public BlockInfusedDirt(String name)
 	{
-		super(Material.ground);
-		this.setBlockName("dirt_infused");
+		super(Material.ground, name);
 	}
 	
 	/*@Override
@@ -29,10 +32,10 @@ public class BlockInfusedDirt extends BlockEC
 		onBlockUpdate(world, x, y, z);
 	}*/
 	
-	public void onBlockUpdate(World world, int x, int y, int z)
+	/*public void onBlockUpdate(World world, BlockPos pos)
 	{
 		boolean changed = false;
-		int meta = world.getBlockMetadata(x, y, z);
+		int meta = world.getBlockMetadata();
 		
 		// Adjust own metadata
 		int highestNeibhorMeta = InfusionHelper.getHighestNeighborMeta(world, x, y, z);
@@ -81,5 +84,5 @@ public class BlockInfusedDirt extends BlockEC
 			InfusionHelper.triggerUpdate(world, x, y, z - 1);
 			InfusionHelper.triggerUpdate(world, x, y, z + 1);
 		}
-	}
+	}*/
 }

@@ -7,4 +7,6 @@ public interface IProxy
 	public abstract void registerKeyBindings();
 	
 	public abstract void registerRenderHandler();
+	
+	public abstract void registerItemModels();
 }

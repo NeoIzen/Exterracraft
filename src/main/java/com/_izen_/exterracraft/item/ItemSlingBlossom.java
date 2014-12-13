@@ -2,9 +2,8 @@ package com._izen_.exterracraft.item;
 
 public class ItemSlingBlossom extends ItemEC
 {
-	public ItemSlingBlossom()
+	public ItemSlingBlossom(String name)
 	{
-		super();
-		this.setUnlocalizedName("sling_blossom");
+		super(name);
 	}
 }

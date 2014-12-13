@@ -2,9 +2,8 @@ package com._izen_.exterracraft.item;
 
 public class ItemExterraniumDust extends ItemEC
 {
-	public ItemExterraniumDust()
+	public ItemExterraniumDust(String name)
 	{
-		super();
-		this.setUnlocalizedName("exterranium_dust");
+		super(name);
 	}
 }

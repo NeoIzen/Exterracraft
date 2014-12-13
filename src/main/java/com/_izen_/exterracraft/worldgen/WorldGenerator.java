@@ -2,23 +2,26 @@ package com._izen_.exterracraft.worldgen;
 
 import java.util.Random;
 
-import com._izen_.exterracraft.handler.ConfigurationHandler;
-import com._izen_.exterracraft.init.ECBlocks;
-import com._izen_.exterracraft.worldgen.WorldGenMeteorite.MeteoriteSize;
-
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.pattern.BlockHelper;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
-import cpw.mods.fml.common.IWorldGenerator;
+import net.minecraftforge.fml.common.IWorldGenerator;
+
+import com._izen_.exterracraft.handler.ConfigurationHandler;
+import com._izen_.exterracraft.init.ECBlocks;
+import com._izen_.exterracraft.worldgen.WorldGenMeteorite.MeteoriteSize;
 
 public class WorldGenerator implements IWorldGenerator
 {
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		switch(world.provider.dimensionId)
+		switch(world.provider.getDimensionId())
 		{
 		case -1:
 			generateNether(world, random, chunkX * 16, chunkZ * 16);
@@ -39,25 +42,23 @@ public class WorldGenerator implements IWorldGenerator
 	private void generateSurface(World world, Random random, int x, int z)
 	{
 		if(ConfigurationHandler.enableLeadOreGeneration)
-			addOreSpawn(ECBlocks.leadOre, 0, Blocks.stone, world, random, x, z, 16, 16, 8, 10, 10, 35);
+			addOreSpawn(ECBlocks.leadOre.getDefaultState(), Blocks.stone, world, random, x, z, 16, 16, 8, 10, 10, 35);
 		
 		// Meteorite spawn
 		if(random.nextInt(100) == 101)
 		{
-			int posX = x + random.nextInt(16);
-			int posZ = z + random.nextInt(16);
-			int posY = world.getHeight();
+			BlockPos pos = new BlockPos(x + random.nextInt(16), z + random.nextInt(16), world.getHeight());
 			
-			for(; posY > 0; --posY)
+			for(; pos.getY() > 0; pos = pos.offsetDown())
 			{
-				if(world.getBlock(posX, posY, posZ) == world.getBiomeGenForCoords(posX, posZ).topBlock)
+				if(world.getBlockState(pos).getBlock() == world.getBiomeGenForCoords(pos).topBlock.getBlock())
 					break;
 			}
 			
-			if(posY > 0)
+			if(pos.getY() > 0)
 			{
 				int size = 1 + random.nextInt(4); // randomize size (1-5)
-				(new WorldGenMeteorite(MeteoriteSize.getSize(size))).generate(world, random, posX, posY, posZ);
+				(new WorldGenMeteorite(MeteoriteSize.getSize(size))).generate(world, random, pos);
 			}
 		}
 	}
@@ -104,7 +105,7 @@ public class WorldGenerator implements IWorldGenerator
 	 *            int for the maximum Y-Coordinate height at which this block
 	 *            may spawn
 	 **/
-	public void addOreSpawn(Block block, int metadata, Block target, World world, Random random, int blockXPos, int blockZPos, int maxX, int maxZ, int maxVeinSize, int chancesToSpawn, int minY, int maxY)
+	public void addOreSpawn(IBlockState block, Block target, World world, Random random, int blockXPos, int blockZPos, int maxX, int maxZ, int maxVeinSize, int chancesToSpawn, int minY, int maxY)
 	{
 		int maxPosY = minY + (maxY - 1);
 		assert maxY > minY : "The maximum Y must be greater than the Minimum Y";
@@ -116,10 +117,8 @@ public class WorldGenerator implements IWorldGenerator
 		int diffBtwnMinMaxY = maxY - minY;
 		for(int x = 0; x < chancesToSpawn; x++)
 		{
-			int posX = blockXPos + random.nextInt(maxX);
-			int posY = minY + random.nextInt(diffBtwnMinMaxY);
-			int posZ = blockZPos + random.nextInt(maxZ);
-			(new WorldGenMinable(block, metadata, maxVeinSize, target)).generate(world, random, posX, posY, posZ);
+			BlockPos pos = new BlockPos(blockXPos + random.nextInt(maxX), minY + random.nextInt(diffBtwnMinMaxY), blockZPos + random.nextInt(maxZ));
+			(new WorldGenMinable(block, maxVeinSize, BlockHelper.forBlock(target))).generate(world, random, pos);
 		}
 	}
 }

@@ -1,7 +1,9 @@
 package com._izen_.exterracraft.init;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com._izen_.exterracraft.Exterracraft;
 import com._izen_.exterracraft.item.ItemBlockAbsorber;
@@ -16,40 +18,47 @@ import com._izen_.exterracraft.item.ItemSlingBlossom;
 import com._izen_.exterracraft.item.ItemSlingPlantSeed;
 import com._izen_.exterracraft.reference.Reference;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
 public class ECItems
 {
-	public static final ItemEC debugTool				= new ItemDebugTool();
+	public static final ItemEC debugTool				= new ItemDebugTool("debug_tool");
 	
-	public static final ItemEC exterraniumIngot			= new ItemExterraniumIngot();
-	public static final ItemEC exterraniumIngotCharged	= new ItemExterraniumIngot();
-	public static final ItemEC exterraniumDust			= new ItemExterraniumDust();
-	public static final ItemEC exterraniumDustCharged	= new ItemExterraniumDust();
-	public static final ItemEC leadIngot				= new ItemLeadIngot();
-	public static final ItemEC exChargeMeter			= new ItemExChargeMeter();
-	public static final ItemEC dataTablet				= new ItemDataTablet();
-	public static final ItemEC blockAbsorber			= new ItemBlockAbsorber();
-	public static final ItemEC slingPlantSeeds			= new ItemSlingPlantSeed();
-	public static final ItemEC slingBlossom				= new ItemSlingBlossom();
+	public static final ItemEC exterraniumIngot			= new ItemExterraniumIngot("exterranium_ingot");
+	public static final ItemEC exterraniumDust			= new ItemExterraniumDust("exterranium_dust");
+	public static final ItemEC leadIngot				= new ItemLeadIngot("lead_ingot");
+	public static final ItemEC exChargeMeter			= new ItemExChargeMeter("ex_charge_meter");
+	public static final ItemEC dataTablet				= new ItemDataTablet("data_tablet");
+	public static final ItemEC blockAbsorber			= new ItemBlockAbsorber("block_absorber");
+	public static final ItemEC slingPlantSeeds			= new ItemSlingPlantSeed("sling_plant_seeds");
+	public static final ItemEC slingBlossom				= new ItemSlingBlossom("sling_blossom");
+	
+	private static List<ItemEC> itemList = new ArrayList<ItemEC>();
 	
 	public static void init()
 	{
 		if(Exterracraft.developmentEnvironment)
 		{
-			GameRegistry.registerItem(debugTool, "debugTool");
+			registerItem(debugTool);
 		}
 
-		GameRegistry.registerItem(exterraniumIngot, "exterraniumIngot");
-		GameRegistry.registerItem(exterraniumIngotCharged, "exterraniumIngotCharged");
-		GameRegistry.registerItem(exterraniumDust, "exterraniumDust");
-		GameRegistry.registerItem(exterraniumDustCharged, "exterraniumDustCharged");
-		GameRegistry.registerItem(leadIngot, "leadIngot");
-		GameRegistry.registerItem(exChargeMeter, "exChargeMeter");
-		GameRegistry.registerItem(dataTablet, "dataTablet");
-		GameRegistry.registerItem(blockAbsorber, "blockAbsorber");
-		GameRegistry.registerItem(slingPlantSeeds, "slingPlantSeeds");
-		GameRegistry.registerItem(slingBlossom, "slingBlossom");
+		registerItem(exterraniumIngot);
+		registerItem(exterraniumDust);
+		registerItem(leadIngot);
+		registerItem(exChargeMeter);
+		registerItem(dataTablet);
+		registerItem(blockAbsorber);
+		registerItem(slingPlantSeeds);
+		registerItem(slingBlossom);
+	}
+	
+	private static void registerItem(ItemEC item)
+	{
+		GameRegistry.registerItem(item, item.getName());
+		itemList.add(item);
+	}
+	
+	public static List<ItemEC> getItemList()
+	{
+		return itemList;
 	}
 }

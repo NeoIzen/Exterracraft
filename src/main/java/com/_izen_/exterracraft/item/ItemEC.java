@@ -1,44 +1,37 @@
 package com._izen_.exterracraft.item;
 
-import com._izen_.exterracraft.creativetab.CreativeTabEC;
-import com._izen_.exterracraft.reference.Reference;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import com._izen_.exterracraft.creativetab.CreativeTabEC;
+import com._izen_.exterracraft.reference.Reference;
+
 public class ItemEC extends Item
 {
-	public ItemEC()
+	private final String name;
+	
+	public ItemEC(String name)
 	{
 		super();
 		this.setCreativeTab(CreativeTabEC.EC_TAB);
+		this.name = name;
+		this.setUnlocalizedName(this.name);
 	}
 
 	@Override
 	public String getUnlocalizedName()
 	{
-		return String.format("item.%s%s", Reference.MOD_ID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+		return String.format("item.%s%s", Reference.MOD_ID.toLowerCase() + ":", this.name);
 	}
 	
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack)
 	{
-		return getUnlocalizedName();
-		//return String.format("item.%s%s", Reference.MOD_ID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+		return this.getUnlocalizedName();
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister iconRegister)
+
+	public String getName()
 	{
-		itemIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
-	}
-	
-	protected String getUnwrappedUnlocalizedName(String unlocalizedName)
-	{
-		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
+		return this.name;
 	}
 }

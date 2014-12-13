@@ -4,10 +4,9 @@ import net.minecraft.init.Blocks;
 
 public class BlockLeadOre extends BlockEC
 {
-	public BlockLeadOre()
+	public BlockLeadOre(String name)
 	{
-		super();
-		this.setBlockName("lead_ore");
+		super(name);
 		this.setHardness(3F);
 		this.setResistance(5F);
 		this.setStepSound(soundTypePiston);

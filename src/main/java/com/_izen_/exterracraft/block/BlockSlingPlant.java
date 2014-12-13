@@ -1,130 +1,220 @@
 package com._izen_.exterracraft.block;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com._izen_.exterracraft.init.ECItems;
-import com._izen_.exterracraft.reference.Reference;
-import com._izen_.exterracraft.utility.LogHelper;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.BlockBush;
+import net.minecraft.block.Block;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockSlingPlant extends BlockPlant implements IGrowable
 {
-	@SideOnly(Side.CLIENT)
-	private IIcon icons[];
+	public static final PropertyInteger	AGE	= PropertyInteger.create("age", 0, 3);
 	
-	public BlockSlingPlant()
+	public BlockSlingPlant(String name)
 	{
-		super(Material.plants);
-		setBlockName("sling_plant");
+		super(Material.plants, name);
 		setCreativeTab(null);
 		setHardness(0F);
 		setStepSound(soundTypeGrass);
+		setDefaultState(new BlockState(this, AGE).getBaseState());
 	}
 	
 	@Override
-	public void updateTick(World world, int x, int y, int z, Random random)
+	public void updateTick(World world, BlockPos pos, IBlockState state, Random random)
 	{
-		super.updateTick(world, x, y, z, random);
+		super.updateTick(world, pos, state, random);
 		
-		if(world.getBlockLightValue(x, y + 1, z) >= 9)
+		if(world.getLightFromNeighbors(pos.offsetUp()) >= 9)
 		{
-			int metadata = world.getBlockMetadata(x, y, z);
+			int i = ((Integer)state.getValue(AGE)).intValue();
 			
-			if(metadata < 3)
+			if(i < 7)
 			{
-				if(random.nextInt(5) == 0)
+				float f = getGrowthChance(this, world, pos);
+				
+				if(random.nextInt((int)(25.0F / f) + 1) == 0)
 				{
-					++metadata;
-					world.setBlockMetadataWithNotify(x, y, z, metadata, 2);
+					world.setBlockState(pos, state.withProperty(AGE, Integer.valueOf(i + 1)), 2);
 				}
 			}
 		}
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister iconRegister)
-	{
-		icons = new IIcon[4];
-		
-		for(int i = 0 ; i < icons.length; ++i)
-		{
-			icons[i] = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())) + i);
-		}
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int metadata)
-	{
-		if(metadata < 0 || metadata >= 4)
-		{
-			LogHelper.error("Wrong metadata for " + getLocalizedName());
-			return icons[0];
-		}
-		else
-			return icons[metadata];
-	}
-	
-    @Override
-    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int p_149690_5_, float p_149690_6_, int p_149690_7_)
+
+    public void growCrops(World world, BlockPos pos, IBlockState state)
     {
-    	super.dropBlockAsItemWithChance(world, x, y, z, p_149690_5_, p_149690_6_, 0);
+        int i = ((Integer)state.getValue(AGE)).intValue() + 1;
+
+        if (i > 3)
+        {
+            i = 3;
+        }
+
+        world.setBlockState(pos, state.withProperty(AGE, Integer.valueOf(i)), 2);
     }
     
-    @Override
-    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+	protected static float getGrowthChance(Block block, World world, BlockPos pos)
+	{
+		float f = 1.0F;
+		BlockPos blockpos1 = pos.offsetDown();
+		
+		for(int i = -1; i <= 1; ++i)
+		{
+			for(int j = -1; j <= 1; ++j)
+			{
+				float f1 = 0.0F;
+				IBlockState blockState = world.getBlockState(blockpos1.add(i, 0, j));
+				
+				if(blockState.getBlock().canSustainPlant(world, blockpos1.add(i, 0, j), net.minecraft.util.EnumFacing.UP, (IPlantable)block))
+				{
+					f1 = 1.0F;
+					
+					if(blockState.getBlock().isFertile(world, blockpos1.add(i, 0, j)))
+					{
+						f1 = 3.0F;
+					}
+				}
+				
+				if(i != 0 || j != 0)
+				{
+					f1 /= 4.0F;
+				}
+				
+				f += f1;
+			}
+		}
+		
+		BlockPos blockpos2 = pos.offsetNorth();
+		BlockPos blockpos3 = pos.offsetSouth();
+		BlockPos blockpos4 = pos.offsetWest();
+		BlockPos blockpos5 = pos.offsetEast();
+		boolean flag = block == world.getBlockState(blockpos4).getBlock() || block == world.getBlockState(blockpos5).getBlock();
+		boolean flag1 = block == world.getBlockState(blockpos2).getBlock() || block == world.getBlockState(blockpos3).getBlock();
+		
+		if(flag && flag1)
+		{
+			f /= 2.0F;
+		} else
+		{
+			boolean flag2 = block == world.getBlockState(blockpos4.offsetNorth()).getBlock() || block == world.getBlockState(blockpos5.offsetNorth()).getBlock() || block == world.getBlockState(blockpos5.offsetSouth()).getBlock() || block == world.getBlockState(blockpos4.offsetSouth()).getBlock();
+			
+			if(flag2)
+			{
+				f /= 2.0F;
+			}
+		}
+		
+		return f;
+	}
+	
+	protected Item getSeed()
+	{
+		return ECItems.slingPlantSeeds;
+	}
+	
+	protected Item getCrop()
+	{
+		return ECItems.slingBlossom;
+	}
+	
+	@Override
+	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune)
+	{
+		super.dropBlockAsItemWithChance(worldIn, pos, state, chance, 0);
+	}
+	
+	@Override
+	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	{
+		List<ItemStack> ret = super.getDrops(world, pos, state, fortune);
+		int age = ((Integer)state.getValue(AGE)).intValue();
+		Random rand = world instanceof World ? ((World)world).rand : new Random();
+		
+		if(age >= 3)
+		{
+			int k = 3 + fortune;
+			
+			for(int i = 0; i < 3 + fortune; ++i)
+			{
+				if(rand.nextInt(6) <= age)
+				{
+					ret.add(new ItemStack(this.getSeed(), 1, 0));
+				}
+			}
+		}
+		
+		return ret;
+	}
+
+	@Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune)
     {
-    	ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-    	
-    	ret.add(new ItemStack(ECItems.slingPlantSeeds, metadata == 3? world.rand.nextInt(1) + 1 : 1));
-    	if(metadata == 3)
-    		ret.add(new ItemStack(ECItems.slingBlossom, 1));
-    	
-    	return ret;
+        return ((Integer)state.getValue(AGE)).intValue() == 3 ? this.getCrop() : this.getSeed();
     }
 
-    @Override
-    public boolean canBlockStay(World world, int x, int y, int z)
+	@Override
+    public boolean isStillGrowing(World world, BlockPos pos, IBlockState state, boolean p_176473_4_)
     {
-        return  world.getBlock(x, y - 1, z) == Blocks.dirt || world.getBlock(x, y - 1, z) == Blocks.grass;
+        return ((Integer)state.getValue(AGE)).intValue() < 3;
+    }
+
+	@Override
+    public boolean canUseBonemeal(World world, Random random, BlockPos pos, IBlockState state)
+    {
+        return isStillGrowing(world, pos, state, true);
+    }
+
+	@Override
+    @SideOnly(Side.CLIENT)
+    public Item getItem(World worldIn, BlockPos pos)
+    {
+        return this.getSeed();
+    }
+
+	@Override
+    public void grow(World world, Random random, BlockPos pos, IBlockState state)
+    {
+        this.growCrops(world, pos, state);
     }
     
 	@Override
-	public boolean func_149851_a(World world, int x, int y, int z, boolean p_149851_5_)
-	{
-		return world.getBlockMetadata(x, y, z) < 3;
-	}
-
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(AGE, Integer.valueOf(meta));
+    }
+    
 	@Override
-	public boolean func_149852_a(World world, Random random, int x, int y, int z)
+	public int getMetaFromState(IBlockState state)
 	{
-		if(random.nextInt(2) == 0)
-			return true;
-		else
-			return false;
+		return ((Integer)state.getValue(AGE)).intValue();
 	}
-
+	
 	@Override
-	public void func_149853_b(World world, Random random, int x, int y, int z)
+	protected BlockState createBlockState()
 	{
-		int next = world.getBlockMetadata(x, y, z) + 1;
-		
-		if(next > 3)
-			next = 3;
-		
-		world.setBlockMetadataWithNotify(x, y, z, next, 2);
+		return new BlockState(this, new IProperty[] { AGE });
+	}
+	
+	@Override
+	public boolean canBlockStay(World world, BlockPos pos, IBlockState state)
+	{
+		return (world.getLight(pos) >= 8 || world.canSeeSky(pos)) && this.canPlaceBlockOn(world.getBlockState(pos.offsetDown()).getBlock());
 	}
 }
