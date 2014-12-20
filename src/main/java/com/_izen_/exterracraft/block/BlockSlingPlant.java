@@ -34,7 +34,7 @@ public class BlockSlingPlant extends BlockPlant implements IGrowable
 		setCreativeTab(null);
 		setHardness(0F);
 		setStepSound(soundTypeGrass);
-		setDefaultState(new BlockState(this, AGE).getBaseState());
+		//setDefaultState(new BlockState(this, AGE).getBaseState());
 	}
 	
 	@Override
@@ -46,7 +46,7 @@ public class BlockSlingPlant extends BlockPlant implements IGrowable
 		{
 			int i = ((Integer)state.getValue(AGE)).intValue();
 			
-			if(i < 7)
+			if(i < 4)
 			{
 				float f = getGrowthChance(this, world, pos);
 				

@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import com._izen_.exterracraft.block.BlockEC;
@@ -31,6 +32,12 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerItemModels()
 	{
+		List<BlockEC> blockList = ECBlocks.getBlockList();
+		for(BlockEC block : blockList)
+		{
+			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + block.getName(), "inventory"));
+		}
+		
 		List<ItemEC> itemList = ECItems.getItemList();
 		for(ItemEC item : itemList)
 		{

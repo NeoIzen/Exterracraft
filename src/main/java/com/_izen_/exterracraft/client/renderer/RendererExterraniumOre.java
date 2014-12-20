@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 import com._izen_.exterracraft.tileentity.TileEntityExterraniumOre;
 
-/*public class RendererExterraniumOre implements ISimpleBlockRenderingHandler
+/*public class RendererExterraniumOre implements ITileEntitySpecialRenderer
 {
 	public final static int renderId = RenderingRegistry.getNextAvailableRenderId();
 	

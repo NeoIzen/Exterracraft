@@ -31,7 +31,7 @@ public class ItemExChargeMeter extends ItemEC
 			if(tileEntity instanceof TileEntityExRadiationEmitter)
 			{
 				TileEntityExRadiationEmitter exRadEmitter = (TileEntityExRadiationEmitter)tileEntity;
-				if(world.isRemote)
+				if(!world.isRemote)
 					player.addChatMessage(new ChatComponentText(String.format("Power Level: %d / %d", exRadEmitter.getPowerLevel(), exRadEmitter.getMaxPowerLevel())));
 				return true;
 			}

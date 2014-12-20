@@ -1,6 +1,6 @@
 {
     "parent": "exterracraft:block/sling_plant",
     "textures": {
-        "#cross": "exterracraft:blocks/sling_plant3"
+        "cross": "exterracraft:blocks/sling_plant3"
     }
 }
